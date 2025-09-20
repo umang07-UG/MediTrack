@@ -1,0 +1,62 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+
+<!--Page Title-->
+<section class="page-title text-center" style="background-image:url({% static 'images/background/3.jpg' %});">
+    <div class="container">
+        <div class="title-text">
+            <h1>Team</h1>
+            <ul class="title-menu clearfix">
+                <li>
+                    <a href="{% url 'index' %}">home &nbsp;/</a>
+                </li>
+                <li>Team</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--End Page Title-->
+
+<section class="team-section section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-title text-center">
+          <h3>Great
+            <span>Team</span>
+          </h3>
+          <p>Leverage agile frameworks to provide a robust synopsis for high level overv-
+            <br>iews. Iterative approaches to corporate strategy...</p>
+        </div>
+        <!-- Nav tabs -->
+        <div class="tabs">
+          <ul class="nav nav-tabs justify-content-center" id="teamTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" id="doctor-tab" data-toggle="tab" href="#doctor" role="tab" aria-controls="doctor" aria-selected="true">doctor</a>
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content" id="teamTab">
+          <!--Start single tab content-->
+          <div class="team-members tab-pane fade show active" id="doctor">
+            <div class="row">
+              <div class="col-lg-4 col-md-6">
+                <div class="team-person text-center">
+                  <img loading="lazy" src="{% static 'images/team/doctor-1.jpg' %}" class="img-fluid" alt="team">
+                  <h6>Dr. Emely Robert</h6>
+                  <p>Bone Specialist</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+{% endblock  %}

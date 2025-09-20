@@ -1,0 +1,179 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+
+<!--Page Title-->
+<section class="page-title text-center" style="background-image:url({% static 'images/background/3.jpg' %});">
+    <div class="container">
+        <div class="title-text">
+            <h1>appointment</h1>
+            <ul class="title-menu clearfix">
+                <li>
+                    <a href="{% url 'index' %}">home &nbsp;/</a>
+                </li>
+                <li>appointment</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--End Page Title-->
+
+    {% if msg %}
+    <div class="alert alert-danger" role="alert">
+    {{msg}}        
+    </div>
+    {% endif %}
+    
+<!-- Section -->
+<section class="section style-three pb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 order-1 order-lg-0">
+        <div class="contact-area style-two pl-0 pr-0 pr-lg-4">
+          <div class="section-title">
+
+
+            <h3>Request <span>Appointment</span></h3>
+          </div>
+
+
+          <form name="contact_form" action="{% url 'appointment' %}" class="default-form contact-form"  method="post">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input class="form-control" type="text" name="pname" placeholder="Name" required>
+                  </div>
+                  <div class="form-group">
+                    <input class="form-control" type="email" name="pemail" placeholder="Email" value="{{ request.session.email }}" readonly>
+                  </div>
+                  <div class="form-group">
+                    <select class="form-control" name="department" required>
+                      <option value="" hidden>-----Select Departments-----</option>
+                      <option value="diagnostic">diagnostic</option>
+                      <option value="psychological">Psychological</option>
+                      <option value="therapy">Therapy</option>
+                      <option value="counseling">Counseling</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input class="form-control" type="text" name="pphone" placeholder="Phone" required>
+                  </div>
+                  <div class="form-group">
+                    <input class="form-control" type="date" name="date" placeholder="Date" utocomplete="off">
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                  </div>
+
+
+                  <div class="form-group">
+                    <label for="doctor">Select Doctor</label>
+                    <select class="form-control" name="doctor" id="doctor" required>
+                      <option value="" hidden>-----Select Doctor-----</option>
+                        {% for d in doctors %}
+                          <option value="{{d.id}}">{{d.name}}</option>
+                          {% empty %}
+                          <option disabled>No Doctors Avalilabe</option>
+                        {% endfor %}
+
+                    </select>
+                  </div>
+
+
+
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <textarea class="form-control" name="message" placeholder="Your Message"></textarea>
+                  </div>
+                  <div class="form-group text-center">
+                    <button type="submit" class="btn-style-one">submit now</button>
+                  </div>
+                </div>
+              </div>
+            </form> 
+
+          
+
+
+
+
+
+        </div>
+      </div>
+      <div class="col-lg-6 mb-4 mb-lg-0 order-0 order-lg-1">
+        <div class="appointment-image-holder ml-0 ml-lg-4">
+          <figure>
+            <img loading="lazy" class="w-100" src="{% static 'images/background/appoinment.jpg' %}" alt="Appointment">
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Section -->
+
+<!--team section-->
+{% comment %} <section class="team-section section">
+  <div class="container">
+    <div class="section-title text-center">
+      <h3>Our Expert
+        <span>Doctors</span>
+      </h3>
+      <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem illo, rerum
+        <br>natus nobis deleniti doloremque minima odit voluptatibus ipsam animi?</p>
+    </div>
+    <div class="row justify-content-center">
+      {% for i in doctors %}
+      <div class="col-lg-4 col-md-6">
+        <div class="team-member">
+          <img loading="lazy" src="{{i.photo.url}}" alt="doctor" class="img-fluid">
+          <div class="contents text-center">
+            <h4>{{i.name}}</h4>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dignissimos, aspernatur.</p>
+            <a href="#" class="btn btn-main">Book Appointment</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      
+      
+    </div>
+  </div>
+</section> {% endcomment %}
+<!--End team section-->
+
+
+<section class="team-section section">
+  <div class="container">
+    <div class="section-title text-center">
+      <h3>Our Expert
+        <span>Doctors</span>
+      </h3>
+      <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem illo, rerum
+        <br>natus nobis deleniti doloremque minima odit voluptatibus ipsam animi?</p>
+    </div>
+
+    <div class="row justify-content-center">
+      {% for i in doctors %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="team-member shadow rounded p-3 text-center">
+          <img loading="lazy" src="{{ i.photo.url }}" alt="doctor" class="img-fluid rounded">
+          <div class="contents mt-3">
+            <h4>{{ i.name }}</h4>
+            <p> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dignissimos, aspernatur. </p>
+            <a href="{% url 'appointment' %}" class="btn btn-main">Book Appointment</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+        <p>No doctors available</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+{% endblock  %}

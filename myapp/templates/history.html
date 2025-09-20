@@ -1,0 +1,43 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+<br><br>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">My Appointment History</h2>
+  <hr>
+
+  {% if appointments %}
+    <div class="row">
+      {% for a in appointments %}
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-lg border-0 rounded">
+          <div class="card-body">
+            <h5 class="card-title text-primary">{{ a.department|title }}</h5>
+            <p class="card-text"><strong>Patient:</strong> {{ a.pname }}</p>
+            <p class="card-text"><strong>Email:</strong> {{ a.pemail }}</p>
+            <p class="card-text"><strong>Phone:</strong> {{ a.pphone }}</p>
+            <p class="card-text"><strong>Date:</strong> {{ a.date }}</p>
+            <p class="card-text"><strong>Message:</strong> {{ a.message|default:"No message" }}</p>
+            <span class="badge 
+              {% if a.status == 'approved' %} bg-success 
+              {% elif a.status == 'rejected' %} bg-danger 
+              {% else %} bg-warning text-dark {% endif %}">
+              {{ a.status|title }}
+            </span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">
+      You have not booked any appointments yet.
+    </div>
+  {% endif %}
+</div>
+
+<br><br><br>
+
+{% endblock %}

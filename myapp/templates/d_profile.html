@@ -1,0 +1,43 @@
+{% extends "dheader.html" %}
+{% load static %}
+{% block content %}
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-5 rounded-4" style="background-color: #ffffff;">
+        <div class="row align-items-center">
+            <!-- Profile Photo -->
+            <div class="col-md-4 text-center mb-4 mb-md-0">
+                <div style="width: 200px; height: 200px; margin: auto; overflow: hidden; border-radius: 50%; border: 4px solid #4CAF50;">
+                    <img src="{{ user.photo.url }}" alt="Profile Photo" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+
+            <!-- User Info -->
+            <div class="col-md-8">
+                <h2 style="font-weight: 700; color: #000;">{{ user.name }}</h2>
+                <p style="font-size: 1.1rem; color: #000;"><strong>Email:</strong> {{ user.email }}</p>
+                <p style="font-size: 1.1rem; color: #000;"><strong>Role:</strong> {{ user.role }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %}
