@@ -1,0 +1,54 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container mt-5">
+  <h2>My Medical Records</h2>
+  <hr>
+
+  {% if records %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Doctor</th>
+          <th>Description</th>
+          <th>File</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+        <tr>
+          <td>{{ record.created_at|date:"d M Y H:i" }}</td>
+          <td>Dr. {{ record.doctor.name }}</td>
+          <td>{{ record.description }}</td>
+          <td>
+            <a href="{{ record.file.url }}" download class="btn btn-primary btn-sm">Download</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No medical records found.</p>
+  {% endif %}
+</div>
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+{% endblock %}

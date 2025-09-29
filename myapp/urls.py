@@ -43,5 +43,12 @@ urlpatterns = [
     path('d_dash/', views.d_dash, name='d_dash'),
     path("appointment/<int:pk>/<str:action>/", views.update_appointment, name="update_appointment"),
     path("appointment/delete/<int:pk>/", views.delete_appointment, name="delete_appointment"),
-
+    path("upload_record/<int:patient_id>/", views.upload_record, name="upload_record"),
+    path("my_records/", views.my_records, name="my_records"),
+    path("admin_dashboard/", views.admin_dashboard, name="admin_dashboard"),
+    path("delete_doctor/<int:pk>/", views.delete_doctor, name="delete_doctor"),
+    path("adelete_appointment/<int:pk>/", views.adelete_appointment, name="adelete_appointment"),
+    path("apatientsdelete/<int:pk>/", views.apatientsdelete, name="apatientsdelete"),
+    path('alogout/', views.alogout, name='alogout'),
+    
 ]

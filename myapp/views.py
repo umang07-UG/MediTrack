@@ -5,6 +5,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 import random
 from django.http import HttpResponse
+from django.db.models import Count
+from django.utils.timezone import now
+from datetime import date
 
 
 
@@ -71,17 +74,19 @@ def login(request):
         try:
             user = User.objects.get(email=request.POST['email'])
             if user.password == request.POST['password']:
-                # request.session['user_id']=user.id
                 request.session['email']=user.email
                 request.session['role']=user.role
                 request.session['photo']=user.photo.url
                 request.session['user_id']=user.id
 
+
                 if user.role == "patient":
                     return redirect('index')
-                else:
+                elif user.role == "doctor":
                     return redirect('dindex')
-                # return redirect('index')
+                elif user.role == "admin":
+                    return redirect('admin_dashboard')
+
             
             else:
                 msg = "Password Doesn't Match"
@@ -93,13 +98,10 @@ def login(request):
         return render(request, 'login.html')
 
 
-# def logout(request):
-#     del request.session['email']
-#     return redirect('login.html')
 
 def logout(request):
-    request.session.flush()  # Ye pura session delete kar deta hai
-    return redirect('login')  # Ya jahan redirect karna ho
+    request.session.flush()  
+    return redirect('login')  
 
 def fpass(request):
 
@@ -154,7 +156,7 @@ def otp(request):
 
     if request.method=="POST":
         try:
-            # otp = int(request.session['otp'])
+
             otp = int(request.session['otp'])
             uotp = int(request.POST.get('uotp'))
 
@@ -168,7 +170,7 @@ def otp(request):
                 return render(request, "otp.html",{'msg':msg})
             
         except Exception as e:
-            print("Error in OTP view:", e)  # See actual error in console
+            print("Error in OTP view:", e)  
             msg = "Something went wrong. Please try again."
             return render(request, "otp.html", {'msg': msg})
 
@@ -202,9 +204,7 @@ def newpass(request):
 def dindex(request):
     return render(request, 'dindex.html')
 
-# def profile(request):
-#     user = User.objects.get(email=request.POST['email'])
-#     return render(request, 'profile.html',{'user':user})
+
 
 def profile(request):
     email = request.session.get('email')
@@ -241,10 +241,12 @@ def appointment(request):
 
         try:
             doctor = User.objects.get(id=doctor_id,role="doctor")
+            patient_user = User.objects.get(id=request.session['user_id'])
 
             Appointment.objects.create(
+                patient=patient_user,
                 pname=pname,
-                pemail=request.session['email'],
+                pemail=patient_user.email,
                 department=department,
                 doctor=doctor,
                 pphone=pphone,
@@ -300,3 +302,106 @@ def delete_appointment(request, pk):
         return redirect("d_dash") 
     except Appointment.DoesNotExist:
         return redirect("d_dash") 
+    
+
+
+def upload_record(request, patient_id):
+    if request.session['role'] != "doctor":
+        return redirect("login")  
+
+    patient = User.objects.get(id=patient_id, role="patient")
+
+    if request.method == "POST":
+        description = request.POST.get("description")
+        file = request.FILES.get("file")
+
+        MedicalRecord.objects.create(
+            patient=patient,
+            doctor=User.objects.get(id=request.session['user_id']),
+            description=description,
+            file=file
+        )
+        msg = "Record uploaded successfully"
+        return render(request, "upload_record.html", {"patient": patient, "msg": msg})
+
+    return render(request, "upload_record.html", {"patient": patient})
+
+
+def my_records(request):
+    if request.session['role'] != "patient":
+        return redirect("login")
+
+    user = User.objects.get(id=request.session['user_id'])
+    records = MedicalRecord.objects.filter(patient=user).order_by('-created_at')
+    return render(request, "my_records.html", {"records": records})
+
+
+def admin_dashboard(request):
+    if request.session.get('role') != "admin":
+        return redirect("login")
+
+    today = date.today()  
+
+    
+    total_doctors = User.objects.filter(role="doctor").count()
+    total_patients = User.objects.filter(role="patient").count()
+    total_appointments = Appointment.objects.count()
+
+
+    today_appointments = Appointment.objects.filter(date=today).count()
+
+  
+    today_patients = User.objects.filter(role="patient", created_at__date=today).count()
+
+  
+    last7days = (
+        Appointment.objects
+        .extra({'day': "date(date)"})
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+    doctors = User.objects.filter(role="doctor")
+    patient = User.objects.filter(role="patient")
+    appointments = Appointment.objects.all().order_by('-date')
+    context = {
+        "total_doctors": total_doctors,
+        "total_patients": total_patients,
+        "total_appointments": total_appointments,
+        "today_appointments": today_appointments,
+        "today_patients": today_patients,
+        "last7days": last7days,
+        "doctors": doctors,
+        "patient":patient,
+        "appointments":appointments,
+    }
+    return render(request, "admin_dashboard.html", context)
+
+def delete_doctor(request, pk):
+    try:
+        doctor = User.objects.get(id=pk, role="doctor")
+        doctor.delete()
+        return redirect("admin_dashboard")
+    except User.DoesNotExist:
+        return redirect("admin_dashboard")
+
+
+def adelete_appointment(request, pk):
+    try:
+        appointment = Appointment.objects.get(id=pk)
+        appointment.delete()
+        return redirect("admin_dashboard") 
+    except Appointment.DoesNotExist:
+        return redirect("admin_dashboard") 
+
+def apatientsdelete(request, pk):
+    try:
+        patient = User.objects.get(id=pk, role="patient")
+        patient.delete()
+        return redirect("admin_dashboard")
+    except User.DoesNotExist:
+        return redirect("admin_dashboard")
+
+def alogout(request):
+    request.session.flush()  
+    return redirect('login')

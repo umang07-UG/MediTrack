@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --info: #4895ef;
+      --warning: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --sidebar-bg: #1e293b;
+      --sidebar-text: #cbd5e1;
+      --sidebar-active: #3b82f6;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f1f5f9;
+      color: #334155;
+    }
+    
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      transition: all 0.3s;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-header h3 {
+      color: white;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .sidebar-menu {
+      padding: 15px 0;
+    }
+    
+    .sidebar-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 5px;
+    }
+    
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background: rgba(59, 130, 246, 0.1);
+      color: white;
+      border-left: 4px solid var(--sidebar-active);
+    }
+    
+    .sidebar-menu i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Main Content Styles */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    
+    .dashboard-title {
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+    
+    /* Card Styles */
+    .card {
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-bottom: 20px;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-body {
+      padding: 25px;
+    }
+    
+    .stat-card {
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(30deg);
+      transition: all 0.5s;
+    }
+    
+    .stat-card:hover::before {
+      transform: rotate(30deg) translate(20px, 20px);
+    }
+    
+    .stat-card i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      opacity: 0.8;
+    }
+    
+    .stat-card h3 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    
+    .stat-card h5 {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    
+    .card-doctor {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .card-patient {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    
+    .card-appointment {
+      background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+    }
+    
+    .card-today {
+      background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+    }
+    
+    /* Table Styles */
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .table thead {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .table thead th {
+      border: none;
+      padding: 15px;
+      font-weight: 500;
+    }
+    
+    .table tbody td {
+      padding: 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+    
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    
+    /* Logout Button */
+    .btn-logout {
+      background: var(--warning);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .btn-logout:hover {
+      background: #e1156d;
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      
+      .main-content {
+        padding: 15px;
+      }
+      
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .user-info {
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h3><i class="fas fa-hospital-alt me-2"></i>MediCare Admin</h3>
+      </div>
+      <div class="sidebar-menu">
+        <ul>
+          <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="top-bar">
+        <h1 class="dashboard-title">Admin Dashboard</h1>
+        <div class="user-info">
+          <img src="https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff" alt="Admin User">
+          <div>
+            <div class="fw-bold">Admin User</div>
+            <small class="text-muted">Administrator</small>
+
+            <a href="{% url 'alogout' %}" 
+                        class="btn btn-sm btn-danger"
+                        onclick="return confirm('Are you sure you want to Sure For LOGOUT??');">
+                        <i class="fas fa-trash"></i> LOG-OUT
+                    </a>
+
+          </div>
+        </div>
+      </div>
+      
+      <!-- doctor Cards -->
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <div class="card stat-card card-doctor">
+            <div class="card-body">
+              <i class="fas fa-user-md"></i>
+              <h5>Total Doctors</h5>
+              <h3>{{ total_doctors }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- doctor Cards end -->
+      
+
+      <!-- Doctors Table -->
+        <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="mb-3"><i class="fas fa-user-md me-2"></i> Doctors List</h4>
+            <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for d in doctors %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                    {% if d.photo %}
+                        <img src="{{ d.photo.url }}" alt="Doctor Photo" width="40" height="40" style="border-radius:50%;">
+                    {% else %}
+                        <i class="fas fa-user-md fa-2x text-secondary"></i>
+                    {% endif %}
+                    </td>
+                    <td>{{ d.name }}</td>
+                    <td>{{ d.email }}</td>
+                    <td>{{ d.mobile }}</td>
+                    <td>
+                    <a href="{% url 'delete_doctor' d.id %}" 
+                        class="btn btn-sm btn-danger"
+                        onclick="return confirm('Are you sure you want to delete this doctor?');">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No doctors available.</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        </div>
+        <!-- Doctors Table end -->
+
+
+
+
+
+
+        <!-- Patients start-->
+        
+        <!-- Patients card start -->
+        
+        <div class="col-md-3 col-sm-6">
+            <div class="card stat-card card-patient">
+                <div class="card-body">
+                    <i class="fas fa-users"></i>
+                    <h5>Total Patients</h5>
+                    <h3>{{ total_patients }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <!-- card end -->
+
+        <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="mb-3"><i class="fas fa-user-md me-2"></i> Patients List</h4>
+            <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in patient %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                    {% if i.photo %}
+                        <img src="{{ i.photo.url }}" alt="Doctor Photo" width="40" height="40" style="border-radius:50%;">
+                    {% else %}
+                        <i class="fas fa-user-md fa-2x text-secondary"></i>
+                    {% endif %}
+                    </td>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.email }}</td>
+                    <td>{{ i.mobile }}</td>
+                    <td>
+                    <a href="{% url 'apatientsdelete' i.id %}" 
+                        class="btn btn-sm btn-danger"
+                        onclick="return confirm('Are you sure you want to delete this Patients?');">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No Patients available.</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+
+
+            </table>
+            </div>
+        </div>
+        </div>
+    <!-- Patients End-->
+    
+    
+    
+    
+    <!-- appointment start-->
+        
+        <!-- card start --> 
+        <div class="col-md-3 col-sm-6">
+            <div class="card stat-card card-patient">
+                <div class="card-body">
+                    <i class="fas fa-users"></i>
+                    <h5>Total Appointments</h5>
+                    <h3>{{ total_appointments }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <!-- card end --> 
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="mb-3"><i class="fas fa-calendar-check me-2"></i> Appointments List</h4>
+                <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for a in appointments %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ a.pname }} ({{ a.pemail }})</td>
+                        <td>{{ a.doctor.name }}</td>
+                        <td>{{ a.department }}</td>
+                        <td>{{ a.date }}</td>
+                        <td>
+                        <span class="badge 
+                            {% if a.status == 'approved' %}bg-success
+                            {% elif a.status == 'rejected' %}bg-danger
+                            {% else %}bg-warning
+                            {% endif %}">
+                            {{ a.status|capfirst }}
+                        </span>
+                        </td>
+                        <td>
+                        <a href="{% url 'adelete_appointment' a.id %}" 
+                            class="btn btn-sm btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this appointment?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No appointments available.</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+ <!-- appointment end-->
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

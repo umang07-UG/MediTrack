@@ -1,0 +1,39 @@
+{% extends "dheader.html" %}
+{% block content %}
+
+
+<br>
+<br>
+<br>
+<div class="container mt-5">
+    <h2>Upload Medical Record for {{ patient.name }}</h2>
+    <hr>
+
+  {% if msg %}
+    <div class="alert alert-success">{{ msg }}</div>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="description" id="description" class="form-control" rows="3" placeholder="Enter details about diagnosis/prescription" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="file" class="form-label">Upload File</label>
+      <input type="file" name="file" id="file" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Upload</button>
+    <a href="{% url 'd_dash' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+{% endblock %}
